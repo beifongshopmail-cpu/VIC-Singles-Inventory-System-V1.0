@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Van Isle Collectables — ManaBox → Shopify</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg:         #f5f4f0;
+  --surface:    #ffffff;
+  --surface2:   #f0ede8;
+  --border:     #dedad3;
+  --border2:    #c8c4bb;
+  --green:      #2d6a4f;
+  --green-dark: #1e4d38;
+  --green-lt:   #eaf3ee;
+  --gold:       #b8860b;
+  --gold-lt:    #fdf8ec;
+  --gold-dark:  #8a6408;
+  --blue:       #1a5a9a;
+  --blue-lt:    #e8f1fb;
+  --text:       #1c1c2a;
+  --text-mid:   #52525f;
+  --text-dim:   #95939e;
+  --warn:       #996000;
+  --warn-bg:    #fff8e6;
+  --success:    #276c47;
+  --shadow-sm:  0 1px 4px rgba(0,0,0,0.07);
+  --radius:     10px;
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; line-height: 1.6;
+  min-height: 100vh;
+}
+
+body::before {
+  content:''; position:fixed; inset:0;
+  background-image: radial-gradient(circle, #c8c4bb 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.38; pointer-events:none; z-index:0;
+}
+
+.page {
+  position:relative; z-index:1;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 52px 24px 100px;
+}
+
+/* ── HEADER ── */
+header { margin-bottom: 44px; }
+
+.store-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--green); color:#fff;
+  font-size:11px; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase;
+  padding:5px 13px 5px 10px; border-radius:4px; margin-bottom:18px;
+}
+
+h1 {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(26px,4vw,36px);
+  font-weight:700; line-height:1.15; margin-bottom:10px;
+}
+h1 em { font-style:italic; color:var(--green); }
+
+.subtitle {
+  color:var(--text-mid); font-size:14px;
+  max-width:500px; line-height:1.7;
+}
+
+.header-rule {
+  height:2px; margin-top:28px; border-radius:2px;
+  background:linear-gradient(90deg, var(--green), var(--gold), transparent);
+}
+
+/* ── PANELS ── */
+.panel {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:28px; margin-bottom:16px;
+  box-shadow:var(--shadow-sm);
+  animation:fadeUp 0.35s ease both;
+}
+.panel:nth-child(1){animation-delay:0.04s}
+.panel:nth-child(2){animation-delay:0.08s}
+.panel:nth-child(3){animation-delay:0.12s}
+.panel:nth-child(4){animation-delay:0.16s}
+
+@keyframes fadeUp {
+  from{opacity:0;transform:translateY(8px)}
+  to  {opacity:1;transform:translateY(0)}
+}
+
+.panel-label {
+  font-size:10px; font-weight:600;
+  letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--green); margin-bottom:18px;
+  display:flex; align-items:center; gap:10px;
+}
+.panel-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.divider { height:1px; background:var(--border); margin:22px 0; }
+
+/* ── DROPZONES ── */
+.two-drop { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:560px){ .two-drop{grid-template-columns:1fr} }
+
+.dz-label {
+  font-size:11px; font-weight:600; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--text-mid); margin-bottom:8px;
+}
+.dz-label span { font-weight:400; color:var(--text-dim); text-transform:none; letter-spacing:0; }
+
+.dropzone {
+  border:2px dashed var(--border2); border-radius:7px;
+  padding:26px 16px; text-align:center; cursor:pointer;
+  transition:all 0.2s; background:var(--surface2);
+  position:relative; min-height:140px;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+}
+.dropzone:hover,.dropzone.drag-over { border-color:var(--green); background:var(--green-lt); }
+.dropzone.loaded { border-color:var(--green); border-style:solid; background:var(--green-lt); }
+.dropzone.loaded-gold { border-color:var(--gold); border-style:solid; background:var(--gold-lt); }
+.dropzone input[type="file"] {
+  position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;
+}
+
+.dz-icon {
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:10px; flex-shrink:0;
+}
+.dz-icon.g    { background:var(--green-lt); border:1.5px solid rgba(45,106,79,0.25); }
+.dz-icon.gold { background:var(--gold-lt);  border:1.5px solid rgba(184,134,11,0.25); }
+
+.dz-title {
+  font-family:'Playfair Display',serif;
+  font-size:14px; font-weight:600; color:var(--text); margin-bottom:3px;
+}
+.dz-sub  { font-size:12px; color:var(--text-dim); line-height:1.5; }
+.dz-sub strong      { color:var(--green); }
+.dz-sub strong.gold { color:var(--gold);  }
+
+.dz-status {
+  font-size:12px; font-weight:600; margin-top:8px;
+  font-family:'DM Mono',monospace; word-break:break-all;
+}
+.dz-status.ok   { color:var(--success); }
+.dz-status.warn { color:var(--warn); }
+
+/* ── FORM ── */
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:560px){ .field-row{grid-template-columns:1fr} }
+.field { display:flex; flex-direction:column; gap:6px; }
+
+label {
+  font-size:11px; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--text-mid);
+}
+
+input[type="text"] {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:5px; color:var(--text);
+  font-family:'DM Sans',sans-serif; font-size:14px;
+  padding:9px 12px; outline:none; width:100%;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+input[type="text"]:focus {
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(45,106,79,0.1);
+}
+.field-hint { font-size:12px; color:var(--text-dim); line-height:1.5; }
+
+/* ── STATUS TOGGLE ── */
+.status-toggle {
+  display:flex; border:1px solid var(--border);
+  border-radius:6px; overflow:hidden; background:var(--surface2);
+}
+.st-opt {
+  flex:1; padding:9px 12px; cursor:pointer;
+  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500;
+  border:none; background:none; transition:all 0.2s; text-align:center;
+  color:var(--text-dim); line-height:1.3;
+}
+.st-opt.sel-active { background:var(--green-lt); color:var(--green); font-weight:600; }
+.st-opt.sel-draft  { background:var(--warn-bg);  color:var(--warn);  font-weight:600; }
+
+/* ── TOGGLES ── */
+.toggle-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; }
+@media(max-width:560px){ .toggle-grid{grid-template-columns:1fr} }
+
+.toggle-row {
+  display:flex; align-items:flex-start;
+  gap:10px; padding:5px 0; cursor:pointer;
+}
+.toggle-row input[type="checkbox"] {
+  width:16px; height:16px; accent-color:var(--green);
+  cursor:pointer; margin-top:2px; flex-shrink:0;
+}
+.toggle-row span  { display:block; font-size:14px; font-weight:500; line-height:1.3; }
+.toggle-row small { font-size:12px; color:var(--text-dim); }
+
+/* ── RUN BUTTON ── */
+.btn-run {
+  width:100%; padding:15px 24px;
+  background:var(--green); border:none; border-radius:6px; color:#fff;
+  font-family:'Playfair Display',serif; font-size:16px; font-weight:600;
+  cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  box-shadow:0 2px 8px rgba(45,106,79,0.25);
+}
+.btn-run:hover:not(:disabled) {
+  background:var(--green-dark); transform:translateY(-1px);
+  box-shadow:0 4px 16px rgba(45,106,79,0.3);
+}
+.btn-run:disabled { opacity:0.45; cursor:not-allowed; transform:none; box-shadow:none; }
+
+/* ── PROGRESS ── */
+.progress-wrap { display:none; margin-top:14px; }
+.progress-track { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+.progress-fill {
+  height:100%; background:linear-gradient(90deg, var(--green), var(--gold));
+  border-radius:2px; transition:width 0.2s ease; width:0%;
+}
+.progress-label { font-size:12px; color:var(--text-dim); margin-top:6px; font-family:'DM Mono',monospace; }
+
+/* ── STATS ── */
+.stats-row {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:12px; margin-top:16px;
+}
+@media(max-width:480px){ .stats-row{grid-template-columns:repeat(2,1fr)} }
+.stat-box {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:6px; padding:14px 12px; text-align:center;
+}
+.stat-num {
+  font-family:'Playfair Display',serif; font-size:26px; font-weight:700;
+  display:block; line-height:1; margin-bottom:4px;
+}
+.stat-num.green{color:var(--green)} .stat-num.gold{color:var(--gold)}
+.stat-num.dim{color:var(--text-dim)} .stat-num.warn{color:var(--warn)}
+.stat-lbl { font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); }
+
+/* ── LOG ── */
+.log-wrap {
+  margin-top:16px; background:#1a1c22;
+  border-radius:6px; overflow:hidden; border:1px solid #2e3040;
+}
+.log-toolbar {
+  background:#22242e; padding:8px 14px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid #2e3040;
+}
+.log-toolbar-title { font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#6a7090; }
+.log-clear { background:none; border:none; color:#6a7090; font-size:11px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:color 0.15s; }
+.log-clear:hover { color:#9090b0; }
+.log-body {
+  padding:14px; font-family:'DM Mono',monospace; font-size:12px;
+  line-height:1.75; max-height:260px; overflow-y:auto; color:#8a90b0;
+}
+.log-body:empty::before { content:'Conversion log will appear here…'; color:#3a3d52; }
+.log-body::-webkit-scrollbar{width:5px}
+.log-body::-webkit-scrollbar-track{background:transparent}
+.log-body::-webkit-scrollbar-thumb{background:#2e3040;border-radius:3px}
+.l-ok{color:#4caf82} .l-warn{color:#d4900a} .l-err{color:#e05555}
+.l-info{color:#5b8dee} .l-head{color:#c8a84b;font-weight:500} .l-dim{color:#4a4e66}
+
+/* ── DOWNLOADS ── */
+.downloads-wrap { display:none; margin-top:14px; }
+.downloads-label { font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px; }
+.chunk-note {
+  background:var(--warn-bg); border:1px solid rgba(153,96,0,0.2);
+  border-radius:5px; padding:10px 14px; font-size:13px; color:var(--warn);
+  margin-bottom:10px; line-height:1.5;
+}
+.btn-dl {
+  display:block; width:100%; padding:13px 20px; margin-top:8px;
+  background:var(--gold-lt); border:1.5px solid var(--gold);
+  border-radius:6px; color:var(--gold-dark);
+  font-family:'Playfair Display',serif; font-size:14px; font-weight:600;
+  cursor:pointer; transition:all 0.2s; text-align:center;
+}
+.btn-dl:hover { background:#fdf0c8; box-shadow:0 2px 12px rgba(184,134,11,0.2); transform:translateY(-1px); }
+
+/* ── CALLOUT ── */
+.callout {
+  background:var(--blue-lt); border:1px solid rgba(26,90,154,0.2);
+  border-radius:5px; padding:11px 14px; font-size:13px;
+  color:var(--blue); line-height:1.6; margin-top:12px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="store-badge">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Van Isle Collectables
+    </div>
+    <h1>ManaBox → <em>Shopify</em></h1>
+    <p class="subtitle">Convert your ManaBox collection export into a Shopify-ready product import CSV. Quantities are carried across from ManaBox. Scryfall adds card images and oracle text.</p>
+    <div class="header-rule"></div>
+  </header>
+
+  <!-- ── PANEL 1: FILES ── -->
+  <div class="panel">
+    <div class="panel-label">Source Files</div>
+
+    <div class="two-drop">
+      <div>
+        <div class="dz-label">① ManaBox Export</div>
+        <div class="dropzone" id="zone-mana">
+          <input type="file" id="file-mana" accept=".csv">
+          <div class="dz-icon g">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5">
+              <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
+              <path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/>
+            </svg>
+          </div>
+          <div class="dz-title">Drop CSV here</div>
+          <div class="dz-sub">ManaBox → Export → <strong>Full Collection</strong></div>
+          <div class="dz-status" id="status-mana"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="dz-label">② Scryfall JSON <span>(optional)</span></div>
+        <div class="dropzone" id="zone-scry">
+          <input type="file" id="file-scry" accept=".json">
+          <div class="dz-icon gold">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.5">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <div class="dz-title">Drop JSON here</div>
+          <div class="dz-sub"><strong class="gold">scryfall.com</strong> → Bulk Data<br>→ Default Cards (~250 MB)</div>
+          <div class="dz-status" id="status-scry"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Without Scryfall:</strong> products import with no images and no card text — functional but bare. <strong>With Scryfall:</strong> every card gets its card image, type line, oracle text, and colour/mana cost tags. Highly recommended for launch.
+    </div>
+  </div>
+
+  <!-- ── PANEL 2: SETTINGS ── -->
+  <div class="panel">
+    <div class="panel-label">Settings</div>
+
+    <div class="field-row" style="margin-bottom:20px;">
+      <div class="field">
+        <label>Vendor</label>
+        <input type="text" id="cfg-vendor" value="Van Isle Collectables">
+      </div>
+      <div class="field">
+        <label>SKU Prefix</label>
+        <input type="text" id="cfg-sku" value="VIC" maxlength="8">
+        <span class="field-hint">Prepended to every SKU — e.g. VIC-MH2-138-FOIL</span>
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:6px;">
+      <label>Import Status</label>
+      <div class="status-toggle" style="margin-top:4px;">
+        <button class="st-opt sel-active" id="st-active" onclick="setStatus('active')">
+          Active<br><small style="font-weight:400;opacity:0.8;">Go live immediately</small>
+        </button>
+        <button class="st-opt" id="st-draft" onclick="setStatus('draft')">
+          Draft<br><small style="font-weight:400;opacity:0.8;">Hidden until published</small>
+        </button>
+      </div>
+      <span class="field-hint" style="margin-top:6px;">
+        Tip: import as <strong>Draft</strong> first to review listings in Shopify, then switch to <strong>Active</strong> and re-import — the second import overwrites only the Status field, nothing else changes.
+      </span>
+    </div>
+
+    <div class="divider"></div>
+    <div class="panel-label" style="margin-bottom:14px;">Options</div>
+
+    <div class="toggle-grid">
+      <label class="toggle-row">
+        <input type="checkbox" id="opt-scry" checked>
+        <div><span>Scryfall Enrichment</span><small>Images, oracle text, colour &amp; mana tags</small></div>
+      </label>
+      <label class="toggle-row">
+        <input type="checkbox" id="opt-en" checked>
+        <div><span>English Only</span><small>Skip non-English cards with a log warning</small></div>
+      </label>
+      <label class="toggle-row">
+        <input type="checkbox" id="opt-zero">
+        <div><span>Skip Zero Quantity</span><small>Omit cards where qty = 0 in ManaBox</small></div>
+      </label>
+    </div>
+  </div>
+
+  <!-- ── PANEL 3: RUN ── -->
+  <div class="panel">
+    <div class="panel-label">Convert</div>
+
+    <button class="btn-run" id="btn-run" disabled onclick="runConvert()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polygon points="5 3 19 12 5 21 5 3"/>
+      </svg>
+      Generate Shopify Import CSV
+    </button>
+
+    <div class="progress-wrap" id="prog-wrap">
+      <div class="progress-track"><div class="progress-fill" id="prog-bar"></div></div>
+      <div class="progress-label" id="prog-label">Preparing…</div>
+    </div>
+
+    <div class="stats-row" id="stats-row" style="display:none;">
+      <div class="stat-box"><span class="stat-num green" id="s-products">0</span><span class="stat-lbl">Products</span></div>
+      <div class="stat-box"><span class="stat-num green" id="s-variants">0</span><span class="stat-lbl">Variants</span></div>
+      <div class="stat-box"><span class="stat-num gold"  id="s-enriched">0</span><span class="stat-lbl">Enriched</span></div>
+      <div class="stat-box"><span class="stat-num dim"   id="s-skipped">0</span><span class="stat-lbl">Skipped</span></div>
+    </div>
+
+    <div class="log-wrap">
+      <div class="log-toolbar">
+        <span class="log-toolbar-title">Log</span>
+        <button class="log-clear" onclick="clearLog()">Clear</button>
+      </div>
+      <div class="log-body" id="log-body"></div>
+    </div>
+
+    <div class="downloads-wrap" id="dl-wrap">
+      <div class="downloads-label">Download</div>
+      <div class="chunk-note" id="chunk-note" style="display:none;"></div>
+      <div id="dl-btns"></div>
+    </div>
+  </div>
+
+</div>
+<script>
+'use strict';
+
+// ── UTILITIES ────────────────────────────────────────────────────────────────
+const yieldUI = () => new Promise(r => setTimeout(r, 0));
+const _enc    = new TextEncoder();
+const byteLen = s => _enc.encode(s).length;
+const MAX_CHUNK = 14 * 1024 * 1024;
+
+function esc(v) {
+  const s = String(v == null ? '' : v);
+  return (s.includes(',') || s.includes('"') || s.includes('\n') || s.includes('\r'))
+    ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+const csvRow = (...vals) => vals.map(esc).join(',') + '\n';
+
+function toHandle(s) {
+  return s.toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-')
+    .replace(/-+/g, '-').replace(/^-|-$/g, '');
+}
+
+// ── CSV PARSER ───────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i], nx = text[i+1];
+    if (inQ) {
+      if (ch==='"'&&nx==='"') { field+='"'; i++; }
+      else if (ch==='"') inQ = false;
+      else field += ch;
+    } else {
+      if (ch==='"') inQ = true;
+      else if (ch===',') { row.push(field); field=''; }
+      else if (ch==='\n') {
+        row.push(field); field='';
+        if (row.some(f=>f!=='')) rows.push(row);
+        row=[];
+      } else if (ch!=='\r') field += ch;
+    }
+  }
+  if (row.length) { row.push(field); if (row.some(f=>f!=='')) rows.push(row); }
+  if (rows.length < 2) return [];
+  const hdrs = rows[0].map(h => h.trim());
+  return rows.slice(1).map(r => {
+    const o = {};
+    hdrs.forEach((h,i) => { o[h] = (r[i]||'').trim(); });
+    return o;
+  });
+}
+
+// ── CONSTANTS ────────────────────────────────────────────────────────────────
+const HEADERS = [
+  'Handle','Title','Body (HTML)','Vendor','Product Category','Type','Tags',
+  'Published','Option1 Name','Option1 Value',
+  'Variant SKU','Variant Grams','Variant Inventory Tracker','Variant Inventory Qty',
+  'Variant Inventory Policy','Variant Fulfillment Service','Variant Price',
+  'Variant Compare At Price','Variant Requires Shipping','Variant Taxable',
+  'Image Src','Image Position','Image Alt Text',
+  'Metafield: custom.card_set [single_line_text_field]','Status'
+];
+
+const FINISH_MAP = {
+  'normal': { label:'Normal',      sku:'NORMAL' },
+  'foil':   { label:'Foil',        sku:'FOIL'   },
+  'etched': { label:'Etched Foil', sku:'ETCHED' },
+};
+
+const RARITY_LABELS = {
+  'common':'Common','uncommon':'Uncommon','rare':'Rare',
+  'mythic':'Mythic Rare','special':'Special','bonus':'Bonus',
+};
+
+const COLOR_NAMES = { W:'White', U:'Blue', B:'Black', R:'Red', G:'Green' };
+
+// ── SCRYFALL ─────────────────────────────────────────────────────────────────
+let scryfallIdx = null;
+
+async function buildScryfallIndex(jsonText) {
+  addLog('info', 'Parsing Scryfall JSON — this may take a moment…');
+  await yieldUI();
+  let cards;
+  try { cards = JSON.parse(jsonText); }
+  catch(e) { addLog('err', 'Scryfall parse failed: ' + e.message); return false; }
+  if (!Array.isArray(cards)) { addLog('err', 'Not a JSON array — make sure you downloaded "Default Cards"'); return false; }
+  const idx = new Map();
+  for (let i = 0; i < cards.length; i++) {
+    if (i % 25000 === 0) await yieldUI();
+    if (cards[i].id) idx.set(cards[i].id.toLowerCase(), cards[i]);
+  }
+  scryfallIdx = idx;
+  addLog('ok', `Scryfall indexed — ${idx.size.toLocaleString()} cards`);
+  return true;
+}
+
+function scryImage(c) {
+  if (!c) return '';
+  if (c.image_uris?.normal) return c.image_uris.normal;
+  if (c.card_faces?.[0]?.image_uris?.normal) return c.card_faces[0].image_uris.normal;
+  return '';
+}
+
+function scryBody(c) {
+  if (!c) return '';
+  const type   = c.type_line || '';
+  const oracle = c.oracle_text || (c.card_faces?.map(f=>f.oracle_text||'').join('\n——\n') || '');
+  const flavor = c.flavor_text || '';
+  let html = '';
+  if (type)   html += `<p><em>${type}</em></p>`;
+  if (oracle) html += `<p>${oracle.replace(/\n/g, '<br>')}</p>`;
+  if (flavor) html += `<p><em>${flavor}</em></p>`;
+  return html;
+}
+
+function scryColorTag(c) {
+  if (!c?.color_identity?.length) return 'Color: Colorless';
+  return 'Color: ' + c.color_identity.map(x => COLOR_NAMES[x]||x).join(', ');
+}
+
+// ── LOGGING ──────────────────────────────────────────────────────────────────
+function addLog(cls, msg) {
+  const el = document.getElementById('log-body');
+  const d  = document.createElement('div');
+  d.className = 'l-' + cls;
+  d.textContent = msg;
+  el.appendChild(d);
+  el.scrollTop = el.scrollHeight;
+}
+function clearLog() { document.getElementById('log-body').innerHTML = ''; }
+
+// ── STATUS TOGGLE ────────────────────────────────────────────────────────────
+let importStatus = 'active';
+function setStatus(val) {
+  importStatus = val;
+  document.getElementById('st-active').className = 'st-opt' + (val==='active' ? ' sel-active' : '');
+  document.getElementById('st-draft').className  = 'st-opt' + (val==='draft'  ? ' sel-draft'  : '');
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+function setProgress(pct, label) {
+  document.getElementById('prog-bar').style.width   = pct + '%';
+  document.getElementById('prog-label').textContent = label;
+}
+
+// ── FILE INPUTS ──────────────────────────────────────────────────────────────
+let manaData = null;
+
+function setupDrop(zoneId, inputId, onFile) {
+  const zone  = document.getElementById(zoneId);
+  const input = document.getElementById(inputId);
+  zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', ()  => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]);
+  });
+  input.addEventListener('change', function() {
+    if (this.files[0]) onFile(this.files[0]);
+    this.value = '';
+  });
+}
+
+// ManaBox drop
+setupDrop('zone-mana', 'file-mana', file => {
+  const st   = document.getElementById('status-mana');
+  const zone = document.getElementById('zone-mana');
+  st.className = 'dz-status'; st.textContent = 'Loading…';
+  const r = new FileReader();
+  r.onload = e => {
+    const rows = parseCSV(e.target.result);
+    if (!rows.length) {
+      st.className = 'dz-status warn';
+      st.textContent = 'Could not parse — check the file is a ManaBox CSV export';
+      return;
+    }
+    manaData = rows;
+    zone.classList.add('loaded');
+    st.className  = 'dz-status ok';
+    st.textContent = `✓ ${file.name} — ${rows.length} rows`;
+    addLog('ok', `ManaBox loaded: ${file.name} (${rows.length} rows)`);
+    document.getElementById('btn-run').disabled = false;
+  };
+  r.readAsText(file);
+});
+
+// Scryfall drop
+setupDrop('zone-scry', 'file-scry', file => {
+  const st   = document.getElementById('status-scry');
+  const zone = document.getElementById('zone-scry');
+  st.className = 'dz-status'; st.textContent = `Loading ${(file.size/1024/1024).toFixed(0)} MB…`;
+  const r = new FileReader();
+  r.onload = async e => {
+    const ok = await buildScryfallIndex(e.target.result);
+    if (ok) {
+      zone.classList.add('loaded-gold');
+      st.className  = 'dz-status ok';
+      st.textContent = `✓ ${scryfallIdx.size.toLocaleString()} cards indexed`;
+    } else {
+      st.className  = 'dz-status warn';
+      st.textContent = 'Failed — make sure you downloaded "Default Cards" from scryfall.com';
+    }
+  };
+  r.readAsText(file);
+});
+
+// ── CHUNKING ─────────────────────────────────────────────────────────────────
+async function chunkCSV(fullCSV) {
+  const lines = fullCSV.split('\n');
+  const header = lines[0] + '\n';
+  const hBytes = byteLen(header);
+  const chunks = [];
+  let parts = [], curBytes = hBytes;
+
+  for (let i = 1; i < lines.length; i++) {
+    if (i % 8000 === 0) await yieldUI();
+    const line = lines[i]; if (!line) continue;
+    const lineStr = line + '\n', lBytes = byteLen(lineStr);
+    const comma   = line.indexOf(',');
+    const cell0   = (comma>0 ? line.slice(0,comma) : line).replace(/^"|"$/g,'');
+    const isNew   = cell0.length > 0;
+
+    if (isNew && curBytes + lBytes > MAX_CHUNK && parts.length > 0) {
+      chunks.push(header + parts.join(''));
+      parts = [lineStr]; curBytes = hBytes + lBytes;
+    } else {
+      parts.push(lineStr); curBytes += lBytes;
+    }
+  }
+  if (parts.length) chunks.push(header + parts.join(''));
+  return chunks;
+}
+
+// ── DOWNLOAD BUTTON ───────────────────────────────────────────────────────────
+function makeDlBtn(label, data, filename) {
+  const btn = document.createElement('button');
+  btn.className = 'btn-dl';
+  btn.textContent = label;
+  btn._d = data; btn._f = filename;
+  btn.addEventListener('click', function() {
+    const url = URL.createObjectURL(new Blob([this._d], {type:'text/csv;charset=utf-8;'}));
+    const a   = Object.assign(document.createElement('a'), {href:url, download:this._f});
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  });
+  return btn;
+}
+
+// ── MAIN CONVERSION ───────────────────────────────────────────────────────────
+async function runConvert() {
+  if (!manaData) return;
+
+  clearLog();
+  document.getElementById('dl-wrap').style.display    = 'none';
+  document.getElementById('stats-row').style.display  = 'none';
+  document.getElementById('prog-wrap').style.display  = 'block';
+  document.getElementById('btn-run').disabled = true;
+  setProgress(0, 'Starting…');
+
+  const vendor   = document.getElementById('cfg-vendor').value.trim() || 'Van Isle Collectables';
+  const skuPfx   = document.getElementById('cfg-sku').value.trim().toUpperCase() || 'VIC';
+  const useScry  = document.getElementById('opt-scry').checked && !!scryfallIdx;
+  const enOnly   = document.getElementById('opt-en').checked;
+  const skipZero = document.getElementById('opt-zero').checked;
+  const status   = importStatus; // 'active' or 'draft'
+
+  if (document.getElementById('opt-scry').checked && !scryfallIdx) {
+    addLog('warn', 'Scryfall enrichment is on but no JSON file was loaded — card images and text will be blank. Drop the Scryfall JSON and re-run if you want enrichment.');
+  } else if (useScry) {
+    addLog('ok', `Scryfall enrichment active — ${scryfallIdx.size.toLocaleString()} cards indexed`);
+  }
+
+  try {
+    setProgress(5, 'Grouping ManaBox rows…');
+    await yieldUI();
+
+    // Group rows by (Set code + Collector number) — one Shopify product per unique printing
+    const groups = new Map();
+    let skipped  = 0;
+
+    for (const row of manaData) {
+      // Language filter
+      const lang = (row['Language'] || '').toLowerCase();
+      if (enOnly && lang && lang !== 'en') {
+        addLog('dim', `SKIP [non-EN] ${row['Name']} (${lang})`);
+        skipped++; continue;
+      }
+      // Zero qty filter
+      const qty = parseInt(row['Quantity'] || '0', 10);
+      if (skipZero && qty === 0) { skipped++; continue; }
+
+      const setCode = (row['Set code'] || '').toUpperCase();
+      const num     = row['Collector number'] || '';
+      if (!setCode || !num) { skipped++; continue; }
+
+      const key = `${setCode}|${num}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(row);
+    }
+
+    addLog('info', `${groups.size} unique card printings from ${manaData.length} ManaBox rows (${skipped} skipped)`);
+    await yieldUI();
+
+    const parts   = [];
+    let products  = 0, variants = 0, enriched = 0;
+    let processed = 0;
+    const total   = groups.size;
+
+    for (const [, groupRows] of groups) {
+      processed++;
+      if (processed % 100 === 0) {
+        setProgress(8 + Math.round((processed / total) * 82), `Processing ${processed} of ${total}…`);
+        await yieldUI();
+      }
+
+      const sample  = groupRows[0];
+      const name    = sample['Name']             || '';
+      const setCode = (sample['Set code']        || '').toUpperCase();
+      const setName = sample['Set name']         || setCode;
+      const num     = sample['Collector number'] || '';
+      const rarity  = RARITY_LABELS[(sample['Rarity']||'').toLowerCase()] || sample['Rarity'] || '';
+      const scryfId = (sample['Scryfall ID']     || '').toLowerCase();
+
+      // Scryfall lookup — direct ID match, always accurate
+      const sc = (useScry && scryfId) ? scryfallIdx.get(scryfId) : null;
+      if (useScry && scryfId && sc) enriched++;
+
+      // Deduplicate finishes within this printing group
+      // If same finish appears in multiple binders/rows, sum the quantities
+      const finishQty = new Map(); // finish key → {row, qty}
+      for (const row of groupRows) {
+        const fv  = (row['Foil'] || 'normal').toLowerCase();
+        const qty = parseInt(row['Quantity'] || '0', 10);
+        if (finishQty.has(fv)) {
+          finishQty.get(fv).qty += qty;
+        } else {
+          finishQty.set(fv, { row, qty });
+        }
+      }
+
+      const title  = `${setCode} ${num} - ${name}`;
+      const handle = toHandle(`vic ${setCode} ${num} ${name}`);
+      const imgSrc = sc ? scryImage(sc) : '';
+      const body   = sc ? scryBody(sc)  : '';
+
+      // Tags
+      const tagParts = [`Set: ${setName}`, `Set Code: ${setCode}`];
+      if (rarity)                tagParts.push(`Rarity: ${rarity}`);
+      if (sc)                    tagParts.push(scryColorTag(sc));
+      if (sc?.mana_cost)         tagParts.push(`Mana Cost: ${sc.mana_cost}`);
+      const tags = tagParts.join(', ');
+
+      let firstRow = true;
+      for (const [foilVal, {row, qty}] of finishQty) {
+        const finish = FINISH_MAP[foilVal] || { label: foilVal, sku: foilVal.toUpperCase().replace(/\s+/g,'-') };
+        const sku    = `${skuPfx}-${setCode}-${num}-${finish.sku}`;
+
+        parts.push(csvRow(
+          handle,
+          firstRow ? title    : '',
+          firstRow ? body     : '',
+          firstRow ? vendor   : '',
+          firstRow ? 'Toys & Games > Games > Card Games' : '',
+          firstRow ? 'Single' : '',
+          firstRow ? tags     : '',
+          firstRow ? 'FALSE'  : '',          // Published column — handled by Status
+          'Finish', finish.label,
+          sku, '2', 'shopify', qty, 'deny', 'manual',
+          '0.00', '', 'TRUE', 'TRUE',
+          firstRow ? imgSrc   : '',
+          firstRow ? '1'      : '',
+          firstRow ? title    : '',
+          firstRow ? setName  : '',
+          firstRow ? status   : ''
+        ));
+        firstRow = false;
+        variants++;
+      }
+
+      addLog('ok', `${title}${sc ? ' ✦' : ''}`);
+      products++;
+    }
+
+    setProgress(93, 'Building CSV…'); await yieldUI();
+
+    const fullCSV    = HEADERS.join(',') + '\n' + parts.join('');
+    const totalBytes = byteLen(fullCSV);
+    const needsChunk = totalBytes > MAX_CHUNK;
+
+    setProgress(97, needsChunk ? 'Splitting into chunks…' : 'Finalising…'); await yieldUI();
+
+    const chunks = needsChunk ? await chunkCSV(fullCSV) : [fullCSV];
+    setProgress(100, 'Done!');
+
+    // Update stats
+    document.getElementById('s-products').textContent = products.toLocaleString();
+    document.getElementById('s-variants').textContent = variants.toLocaleString();
+    document.getElementById('s-enriched').textContent = enriched.toLocaleString();
+    document.getElementById('s-skipped').textContent  = skipped.toLocaleString();
+    document.getElementById('stats-row').style.display = 'grid';
+
+    addLog('head', `─── ${products} products · ${variants} variants · ${enriched} Scryfall-enriched · ${skipped} skipped ───`);
+    if (needsChunk) addLog('warn', `Output is ${(totalBytes/1024/1024).toFixed(1)} MB — split into ${chunks.length} files. Import in order, Part 1 first.`);
+
+    // Build download buttons
+    const date   = new Date().toISOString().slice(0, 10);
+    const dlBtns = document.getElementById('dl-btns');
+    const noteEl = document.getElementById('chunk-note');
+    dlBtns.innerHTML = '';
+
+    if (needsChunk) {
+      noteEl.style.display = 'block';
+      noteEl.textContent   = `Output is ${(totalBytes/1024/1024).toFixed(1)} MB — split into ${chunks.length} files to stay under Shopify's 15 MB limit. Import them in order, Part 1 first.`;
+    } else {
+      noteEl.style.display = 'none';
+    }
+
+    chunks.forEach((chunk, i) => {
+      const fname = chunks.length > 1
+        ? `VIC_shopify_${status}_part${i+1}of${chunks.length}_${date}.csv`
+        : `VIC_shopify_${status}_${date}.csv`;
+      const sizeMB = (byteLen(chunk)/1024/1024).toFixed(1);
+      dlBtns.appendChild(makeDlBtn(
+        chunks.length > 1
+          ? `↓ Part ${i+1} of ${chunks.length}  —  ${fname}  (${sizeMB} MB)`
+          : `↓ Download  ${fname}  (${sizeMB} MB)`,
+        chunk, fname
+      ));
+    });
+
+    document.getElementById('dl-wrap').style.display = 'block';
+
+  } catch (err) {
+    addLog('err', 'ERROR: ' + err.message);
+    console.error(err);
+  }
+
+  document.getElementById('btn-run').disabled = false;
+  setTimeout(() => {
+    document.getElementById('prog-wrap').style.display = 'none';
+    setProgress(0, '');
+  }, 1500);
+}
+</script>
+</body>
+</html>
